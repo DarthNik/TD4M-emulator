@@ -4,12 +4,7 @@
 #include <unistd.h>
 
 int main(int argc, char* argv[]){
-    char rom[256][9];
-    /*for (int i = 0; i < 256; i++){
-        memset(rom[i], '0', sizeof(rom[i]));
-        rom[i][9] = '\0';
-    }*/
-    
+    char rom[256][9];    
     char ram[256][5];
     char buf[15];
     char res[9];
@@ -263,7 +258,7 @@ int main(int argc, char* argv[]){
         
         else if (strncmp(buf, "OUT", 3) == 0){
             if (strlen(buf) == 8){
-                strncpy(Im, buf+4, 4);
+              strncpy(Im, buf+4, 4);
               strcpy(res, "1011");
               strcat(res, Im);
               strcpy(rom[index], res);
@@ -285,7 +280,7 @@ int main(int argc, char* argv[]){
         exit(1);
     }
     
-    for (int i = 0; i < 256; i++){
+    for (int i = 0; i < index ; i++){
         char* endptr;
         int tmp = strtol(rom[i], &endptr, 2);
         fputc(tmp, fd);

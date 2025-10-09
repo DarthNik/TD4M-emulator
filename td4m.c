@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 int A = 0;
 int B = 0;
@@ -68,6 +69,25 @@ void new_print(int A, int B, int c, int z, int input, int output, int pc, char* 
     printf("IN: %s OUT: %s A: %s B: %s c: %d z: %d PC: %s Команда: %s\n", Bin(input, 4), Bin(output, 4), Bin(A, 4), Bin(B, 4), c, z, Bin(pc, 8), command);
 }
 
+//сложение двух чисел
+int addition(int A, int Im){
+    int res = A + Im;
+    if (res > 15){
+        res -= 16;
+        c = 1;
+    }
+    
+    if (res == 0){
+        z = 1;
+    }
+            
+    else{
+	c = 0;
+	z = 0;
+    }
+    return res;
+}
+
 void prog(){
     char command[9];
     memset(command, 0, sizeof(command));
@@ -77,36 +97,14 @@ void prog(){
     char name[12];
     memset(name, 0, sizeof(name));
     if (strncmp(command, "0000", 4) == 0){
-        if (strncmp(command+4, "0000", 4) == 0){
-            new_print(A, B, c, z, input, output, pc, "NOP");
-            pc++; 
-        }
-        else{
-            char* endptr;
-            Im = strtol(command + 4, &endptr, 2) & 0xF;
-            strcpy(name,"ADD A,");
-            strcat(name, command+4);
-            name[strlen(name)] = '\0';
-            new_print(A, B, c, z, input, output, pc, name);
-            A += Im;
-            if (A > 15){
-                A -= 16;
-                c = 1;
-                z = 0;
-            }
-            
-            else if (A == 0){
-                z = 1;
-                c = 0;
-            }
-            
-            else{
-                c = 0;
-                z = 0;
-            }
-            
-            pc++;
-        }
+        char* endptr;
+        Im = strtol(command + 4, &endptr, 2) & 0xF;
+        strcpy(name,"ADD A,");
+        strcat(name, command+4);
+        name[strlen(name)] = '\0';
+        new_print(A, B, c, z, input, output, pc, name);
+        A = addition(A, Im);
+        pc++;
     }
     
     else if (strncmp(command, "0001", 4) == 0){
@@ -125,24 +123,7 @@ void prog(){
             strcat(name, command+4);
             name[strlen(name)] = '\0';
             new_print(A, B, c, z, input, output, pc, name);
-            B+= Im;
-            A = B;
-            if (A > 15){
-                A -= 16 ;
-                c = 1;
-                z = 0;
-            }
-            
-            else if (A == 0){
-                z = 1;
-                c = 0;
-            }
-            
-            else{
-                c = 0;
-                z = 0;
-            }
-            
+            A = addition(B, Im);
             pc++;
         }
     }
@@ -166,24 +147,7 @@ void prog(){
             strcat(name, command+4);
             name[strlen(name)] = '\0';
             new_print(A, B, c, z, input, output, pc, name);
-            input += Im;
-            A = input;
-            if (A > 15){
-                A -= 16 ;
-                c = 1;
-                z = 0;
-            }
-            
-            else if (A == 0){
-                z = 1;
-                c = 0;
-            }
-            
-            else{
-                c = 0;
-                z = 0;
-            }
-            
+            A = addition(input, Im);
             pc++;
         }
     }
@@ -217,24 +181,7 @@ void prog(){
             strcat(name, command+4);
             name[strlen(name)] = '\0';
             new_print(A, B, c, z, input, output, pc, name);
-            A+= Im;
-            B = A;
-            if (B > 15){
-                B -= 16 ;
-                c = 1;
-                z = 0;
-            }
-            
-            else if (B == 0){
-                z = 1;
-                c = 0;
-            }
-            
-            else{
-                c = 0;
-                z = 0;
-            }
-            
+            B = addition(A, Im);
             pc++;
         }
     }
@@ -246,23 +193,7 @@ void prog(){
         strcat(name, command+4);
         name[strlen(name)] = '\0';
         new_print(A, B, c, z, input, output, pc, name);
-        B += Im; 
-        if (B > 15){
-            B -= 16 ;
-            c = 1;
-            z = 0;
-        }
-        
-        else if (B == 0){
-            z = 1;
-            c = 0;
-        }
-        
-        else{
-            c = 0;
-            z = 0;
-        }
-        
+        B = addition(B, Im);
         pc++;
     }
     
@@ -285,24 +216,7 @@ void prog(){
             strcat(name, command+4);
             name[strlen(name)] = '\0';
             new_print(A, B, c, z, input, output, pc, name);
-            input += Im;
-            B = input;
-            if (B > 15){
-                B -= 16 ;
-                c = 1;
-                z = 0;
-            }
-            
-            else if (B == 0){
-                z = 1;
-                c = 0;
-            }
-            
-            else{
-                c = 0;
-                z = 0;
-            }
-            
+            B = addition(input, Im);
             pc++;
         }
     }
@@ -323,23 +237,7 @@ void prog(){
     else if (strncmp(command, "1000", 4) == 0){
         if (strncmp(command+4, "0000", 4) == 0){
             new_print(A, B, c, z, input, output, pc, "ADD A,B");
-            A += B; 
-            if (A > 15){
-                A -= 16 ;
-                c = 1;
-                z = 0;
-            }
-            
-            else if (A == 0){
-                z = 1;
-                c = 0;
-            }
-            
-            else{
-                c = 0;
-                z = 0;
-            }
-            
+            A = addition(A, B); 
             pc++;
         }
         
@@ -460,9 +358,9 @@ void prog(){
             char XY[9];
             strcat(XY, Bin(x,4));
             strcat(XY, Bin(y,4));
+            XY[9] = '\0';
             char* endptr;
-            Im = strtol(command + 4, &endptr, 2) & 0xF;
-            A = strtol(ram[Im], &endptr, 2) & 0xF;
+            A = strtol(ram[strtol(XY, &endptr, 2) & 0xF], &endptr, 2) & 0xF;
             c = 0;
             z = 0;
             pc++;
@@ -473,8 +371,9 @@ void prog(){
             char XY[9];
             strcat(XY, Bin(x,4));
             strcat(XY, Bin(y,4));
+            XY[9] = '\0';
             char* endptr;
-            Im = strtol(command + 4, &endptr, 2) & 0xF;
+            Im = strtol(XY, &endptr, 2) & 0xFF;
             strcpy(ram[Im], Bin(A, 4));
             c = 0;
             z = 0;
@@ -486,9 +385,9 @@ void prog(){
             char XY[9];
             strcat(XY, Bin(x,4));
             strcat(XY, Bin(y,4));
+            XY[9] = '\0';
             char* endptr;
-            Im = strtol(command + 4, &endptr, 2) & 0xF;
-            B = strtol(ram[Im], &endptr, 2) & 0xF;
+            B = strtol(ram[strtol(XY, &endptr, 2) & 0xFF], &endptr, 2) & 0xF;
             c = 0;
             z = 0;
             pc++;
@@ -499,8 +398,9 @@ void prog(){
             char XY[9];
             strcat(XY, Bin(x,4));
             strcat(XY, Bin(y,4));
+            XY[9] = '\0';
             char* endptr;
-            Im = strtol(command + 4, &endptr, 2) & 0xF;
+            Im = strtol(XY, &endptr, 2) & 0xFF;
             strcpy(ram[Im], Bin(B, 4));
             c = 0;
             z = 0;
@@ -525,7 +425,6 @@ void prog(){
         
         else if (strncmp(command+4, "1110", 4) == 0){
             new_print(A, B, c, z, input, output, pc, "INC XY");
-            char XY[9];
             y++;
             if (y > 15){
                 y -= 16;
@@ -544,10 +443,9 @@ void prog(){
             char XY[9];
             strcat(XY, Bin(x,4));
             strcat(XY, Bin(y,4));
+            XY[9] = '\0';
             char* endptr;
-            Im = strtol(command + 4, &endptr, 2) & 0xF;
-            c = 0;
-            z = 0;
+            Im = strtol(XY, &endptr, 2) & 0xFF;
             pc = Im;
         }
     }
@@ -567,9 +465,8 @@ void prog(){
             strcat(name, command+4);
             name[strlen(name)] = '\0';
             new_print(A, B, c, z, input, output, pc, name);
-            output = B;
-            c = 0;
-            z = 0;
+            Im = strtol(command+4, &endptr, 2) & 0xF;
+            output = addition(B, Im);
             pc++;
         }
     }
@@ -582,7 +479,7 @@ void prog(){
         new_print(A, B, c, z, input, output, pc, name);
         if (z == 1){
             int pcl = strtol(command+4, NULL, 2) & 0xF;
-            pc = (pc & 0xF0) | pcl; printf("%d", pc);
+            pc = (pc & 0xF0) | pcl;
         }
         
         else
@@ -597,6 +494,8 @@ void prog(){
         name[strlen(name)] = '\0';
         new_print(A, B, c, z, input, output, pc, name);
         output = Im;
+        c = 0;
+        z = 0;
         pc++;
     }
     
@@ -608,6 +507,8 @@ void prog(){
         name[strlen(name)] = '\0';
         new_print(A, B, c, z, input, output, pc, name);
         y = Im;
+        c = 0;
+        z = 0;
         pc++;
     }
     
@@ -619,6 +520,8 @@ void prog(){
         name[strlen(name)] = '\0';
         new_print(A, B, c, z, input, output, pc, name);
         x = Im;
+        c = 0;
+        z = 0;
         pc++;
     }
     
@@ -690,6 +593,24 @@ int main(int argc, char* argv[]){
     }
     
     fclose(fd);
+    
+    if (argc == 4){
+        fd = fopen(argv[3], "rb");
+        c = 0;
+        i = 0;
+        while ((c = fgetc(fd)) != EOF)
+            strcpy(ram[i++], Bin(c, 8));
+            
+        fclose(fd);
+    }
+    
+    else{
+        srand(time(NULL));
+        for(int i = 0; i < 256; i++){
+            strcpy(ram[i], Bin(rand()%16, 4));
+        }
+    }
+
     if (strcmp(argv[1], "-a") == 0)
         auto_mode();
     
