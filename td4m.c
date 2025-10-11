@@ -66,7 +66,14 @@ char* Bin(int a, int byte){
 
 //Вывод значений на каждом ходу
 void new_print(int A, int B, int c, int z, int input, int output, int pc, char* command){
-    printf("IN: %s OUT: %s A: %s B: %s c: %d z: %d PC: %s Команда: %s\n", Bin(input, 4), Bin(output, 4), Bin(A, 4), Bin(B, 4), c, z, Bin(pc, 8), command);
+
+    char XY[9];
+    memset(XY, 0, sizeof(XY));
+    strcat(XY, Bin(x,4));
+    strcat(XY, Bin(y,4));
+    XY[9] = '\0';
+    
+    printf("IN: %s OUT: %s A: %s B: %s c: %d z: %d PC: %s Команда: %s\nX: %s Y: %s XY: %s\n", Bin(input, 4), Bin(output, 4), Bin(A, 4), Bin(B, 4), c, z, Bin(pc, 8), command, Bin(x, 4), Bin(y, 4), XY);
 }
 
 //сложение двух чисел
@@ -599,7 +606,7 @@ int main(int argc, char* argv[]){
         c = 0;
         i = 0;
         while ((c = fgetc(fd)) != EOF)
-            strcpy(ram[i++], Bin(c, 8));
+            strcpy(ram[i++], Bin(c, 4));
             
         fclose(fd);
     }

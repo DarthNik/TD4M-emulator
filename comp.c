@@ -2,6 +2,42 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
+
+//функция перевода из десятичной в двоичную
+char* Bin(int a, int byte){
+    char* binary = malloc(byte);
+    memset(binary, 0, byte);
+    int mas;
+    char m[2];
+    while (a > 0){
+        mas = a % 2; 
+        a /= 2;
+        sprintf(m, "%d", mas);
+        strcat(binary, m);
+        byte--;
+    }
+    
+    //дополнение нулями до заданной битности
+    if (byte > 0){
+        char res[byte];
+        memset(res, '0', byte);
+        res[byte] = '\0';
+        strcat(binary, res);
+    }
+    
+    int length = strlen(binary);
+    int temp = 0;
+    int i, j;
+    //разворот строки
+    for (i = 0, j = length - 1; i < j; i++, j--){
+        temp = binary[i];
+        binary[i] = binary[j];
+        binary[j] = temp;
+    }
+    
+    return binary;
+}
 
 int main(int argc, char* argv[]){
     char rom[256][9];    
@@ -287,5 +323,25 @@ int main(int argc, char* argv[]){
     }
 
     fclose(fd);
+    
+    if (argc == 4){
+        srand(time(NULL));
+        for(int i = 0; i < 256; i++)
+            strcpy(ram[i], Bin(rand()%16, 4));
+            
+        fd = fopen(argv[3], "wb");
+        if (fd == 0){
+            printf("Ошибка открытия выходного файла для записи");
+            exit(1);
+        }
+        
+        for (int i = 0; i < 256 ; i++){
+            char* endptr;
+            int tmp = strtol(ram[i], &endptr, 2);
+            fputc(tmp, fd);
+        }
+
+        fclose(fd);
+    }
     return 0;
 }
